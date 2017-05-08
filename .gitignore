@@ -1,0 +1,16 @@
+.gradle/
+.idea/
+bin/
+build/
+doc/
+gen/
+
+*.class
+*.iml
+*.swp
+
+.DS_Store
+.gradletasknamecache
+.metadata
+local.properties
+localdeveloper.properties
