@@ -1,4 +1,4 @@
-package com.scvngr.levelup.pos.tests;
+package com.scvngr.levelup.pos;
 
 import junit.framework.TestCase;
 

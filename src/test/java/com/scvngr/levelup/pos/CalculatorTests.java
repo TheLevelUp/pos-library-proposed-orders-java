@@ -1,6 +1,6 @@
-package com.scvngr.levelup.pos.tests;
+package com.scvngr.levelup.pos;
 
-import com.scvngr.levelup.pos.tests.data.CalculatorTestData;
+import com.scvngr.levelup.pos.data.CalculatorTestData;
 import junit.framework.TestCase;
 
 public class CalculatorTests extends TestCase

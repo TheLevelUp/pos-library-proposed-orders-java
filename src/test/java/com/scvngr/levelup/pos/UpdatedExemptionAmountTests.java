@@ -1,6 +1,5 @@
-package com.scvngr.levelup.pos.tests;
+package com.scvngr.levelup.pos;
 
-import junit.framework.Test;
 import junit.framework.TestCase;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
@@ -9,7 +8,7 @@ import org.junit.runner.RunWith;
  * Created by Navid on 5/9/2017.
  */
 @RunWith(Enclosed.class)
-public class UpdatedExemptionAmountTests extends TestCase{
+public class UpdatedExemptionAmountTests extends TestCase {
 
 
     public static class TestPaidInFull{

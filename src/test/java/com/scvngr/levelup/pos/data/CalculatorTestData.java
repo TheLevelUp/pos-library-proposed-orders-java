@@ -1,4 +1,4 @@
-package com.scvngr.levelup.pos.tests.data;
+package com.scvngr.levelup.pos.data;
 
 
 public class CalculatorTestData {
