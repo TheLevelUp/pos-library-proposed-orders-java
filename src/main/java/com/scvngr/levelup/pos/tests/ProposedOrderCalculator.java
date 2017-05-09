@@ -1,4 +1,4 @@
-package com.scvngr.levelup.pos;
+package com.scvngr.levelup.pos.tests;
 
 public class ProposedOrderCalculator {
     /**
@@ -54,12 +54,12 @@ public class ProposedOrderCalculator {
         return values;
     }
 
-    private static int calculateAdjustedCustomerPaymentAmount(int totalOutstandingAmount, int customerPaymentAmount)
+    static int calculateAdjustedCustomerPaymentAmount(int totalOutstandingAmount, int customerPaymentAmount)
     {
         return Math.max(0,Math.min(customerPaymentAmount, totalOutstandingAmount));
     }
 
-    private static int calculateAdjustedTaxAmount(int totalOutstandingAmount,
+    static int calculateAdjustedTaxAmount(int totalOutstandingAmount,
                                                   int totalTaxAmount,
                                                   int postAdjustedCustomerPaymentAmount)
     {
@@ -77,7 +77,7 @@ public class ProposedOrderCalculator {
         return totalTaxAmount;
     }
 
-    private static int calculateAdjustedExemptionAmount(int totalOutstandingAmount,
+    static int calculateAdjustedExemptionAmount(int totalOutstandingAmount,
                                                         int totalTaxAmount,
                                                         int totalExemptionAmount,
                                                         int postAdjustedCustomerPaymentAmount)
@@ -115,7 +115,7 @@ public class ProposedOrderCalculator {
      * @param customerSpendAmount The amount the customer would like to spend, in cents.
      * @param appliedDiscountAmount The discount amount applied to the point of sale for the customer.
      */
-    private static int calculateAdjustedSpendAmountCompleteOrder(int totalOutstandingAmount,
+    static int calculateAdjustedSpendAmountCompleteOrder(int totalOutstandingAmount,
                                                                  int customerSpendAmount,
                                                                  int appliedDiscountAmount)
     {
