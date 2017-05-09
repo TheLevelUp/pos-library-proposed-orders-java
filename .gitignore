@@ -4,6 +4,7 @@ bin/
 build/
 doc/
 gen/
+out/
 
 *.class
 *.iml
