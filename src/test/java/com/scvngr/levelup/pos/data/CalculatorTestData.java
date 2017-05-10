@@ -6,7 +6,7 @@ public class CalculatorTestData {
      * The below values were generated using forumals in this spreadsheet:
      * https://docs.google.com/a/scvngr.com/spreadsheets/d/1qUeFsBa_9yMlwILDrT0LhrZ5N6kbw1gvr0xoLeGZA1E/edit?usp=sharing
      */
-    public static int[][] TestBattery =
+    public final static int[][] TestBattery =
     {
         {900, 100, 300, 800, 800, 0, 300},
         {900, 100, 500, 800, 800, 0, 500},

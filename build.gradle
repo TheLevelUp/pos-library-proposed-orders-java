@@ -17,13 +17,3 @@ jar {
     baseName = 'pos-proposed-orders-java'
     version= '1.0.0'
 }
-
-
-//task buildJar(type : Jar){
-//    manifest {
-//        attributes 'Implementation-Title':'Level Up Pos Check Calculator',
-//                'Version' : version
-//    }
-//    from { configurations.compile.collect {it.isDirectory() ? it : zipTree(it)}}
-//    with jar
-//}

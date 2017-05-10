@@ -5,7 +5,7 @@ import junit.framework.TestCase;
 public class SplitTenderTests extends TestCase {
     private static final int TAX_RATE = 10; //Tax rate as percent
 
-    public void testSplitTenderExample_LevelUp_Then_Cash() throws Exception{
+    public void testSplitTenderExample_LevelUp_Then_Cash() throws Exception {
         // Split tender example: partial payment to LevelUp ($10) and remaining balance tendered to cash.
         // Check details (prior to LevelUp Scan)
         //   Item subtotal: $20
@@ -16,7 +16,7 @@ public class SplitTenderTests extends TestCase {
 
         // User pays $10 towards LevelUp
 
-        // Create propsed order: expected values
+        // Create proposed order: expected values
         int expectedTaxAmount = 0;
         int expectedSpendAmount = 1000;
         int expectedExemptionAmount = 0;
@@ -69,7 +69,7 @@ public class SplitTenderTests extends TestCase {
         assertEquals(expectedCompletedOrderValues, completedOrderValues);
     }
 
-    public void testSplitTenderExample_Cash_Then_LevelUp() throws Exception{
+    public void testSplitTenderExample_Cash_Then_LevelUp() throws Exception {
         // Split tender example: partial payment to cash ($10) and remaining balance tendered to LevelUp.
         // Check details (prior to LevelUp Scan)
         //   Item subtotal: $20
@@ -86,7 +86,7 @@ public class SplitTenderTests extends TestCase {
 
         // User pays remaining balance ($12) towards LevelUp
 
-        // Create propsed order: expected values
+        // Create proposed order: expected values
         int expectedTaxAmount = 200;
         int expectedSpendAmount = 1200;
         int expectedExemptionAmount = 0;
@@ -126,7 +126,7 @@ public class SplitTenderTests extends TestCase {
         // Create completed order: expected values
         // adjusted tax amount: $1.90
         // spend amount unchanged: $11.90
-        // expemption amount unchanged
+        // exemption amount unchanged
 
         expectedTaxAmount = 190;
         expectedSpendAmount = 1190;
@@ -144,7 +144,7 @@ public class SplitTenderTests extends TestCase {
         assertEquals(expectedCompletedOrderValues, completedOrderValues);
     }
 
-    public void testSplitTenderExample_LevelUp_Then_Cash_With_Exemptions() throws Exception{
+    public void testSplitTenderExample_LevelUp_Then_Cash_With_Exemptions() throws Exception {
         // $9.90 is owed, $0.90 of that is tax. $3.00 of that is tobacco/alcohol, and the customer wants to pay
         // $9.00 towards the check
         int itemsSubtotalAmount = 900;
@@ -154,9 +154,9 @@ public class SplitTenderTests extends TestCase {
 
         int spendAmount = 900;
 
-        // Create propsed order: expected values
+        // Create proposed order: expected values
         AdjustedCheckValues expectedProposedOrderValues =
-                new AdjustedCheckValues( 900,0,300);
+                new AdjustedCheckValues(900, 0, 300);
 
         AdjustedCheckValues proposedOrderValues = ProposedOrderCalculator.calculateCreateProposedOrderValues(
                 totalOutstandingAmount,
@@ -177,9 +177,9 @@ public class SplitTenderTests extends TestCase {
         // Create completed order: expected values
         // tax amount unchanged
         // spend amount unchanged
-        // expemption amount unchanged
+        // exemption amount unchanged
         AdjustedCheckValues expectedCompletedOrderValues =
-                new AdjustedCheckValues(900,80,300);
+                new AdjustedCheckValues(900, 80, 300);
 
         AdjustedCheckValues completedOrderValues = ProposedOrderCalculator.calculateCompleteOrderValues(
                 totalOutstandingAmount,
@@ -194,9 +194,8 @@ public class SplitTenderTests extends TestCase {
     /**
      * Adjusted spend = No, Exemption = Yes, Tax = Yes
      */
-    public void testSplitTenderExample_LevelUp_Then_Cash_With_Adjusted_Exemption_And_Adjusted_Tax()
-    {
-// $11.00 is owed, $1.00 of that is tax. $5.00 of that is tobacco/alcohol, and the customer wants to pay
+    public void testSplitTenderExample_LevelUp_Then_Cash_With_Adjusted_Exemption_And_Adjusted_Tax() {
+        // $11.00 is owed, $1.00 of that is tax. $5.00 of that is tobacco/alcohol, and the customer wants to pay
         // $8.00 towards the check
         int itemsSubtotalAmount = 1000;
         int taxAmountDue = itemsSubtotalAmount / TAX_RATE;
@@ -207,7 +206,7 @@ public class SplitTenderTests extends TestCase {
 
         // Create propsed order: expected values
         AdjustedCheckValues expectedProposedOrderValues =
-                new AdjustedCheckValues(800,0,300);
+                new AdjustedCheckValues(800, 0, 300);
 
         AdjustedCheckValues proposedOrderValues = ProposedOrderCalculator.calculateCreateProposedOrderValues(
                 totalOutstandingAmount,
@@ -228,9 +227,9 @@ public class SplitTenderTests extends TestCase {
         // Create completed order: expected values
         // spend amount unchanged
         // tax amount unchanged
-        // expemption amount *changed*
+        // exemption amount *changed*
         AdjustedCheckValues expectedCompletedOrderValues =
-                new AdjustedCheckValues(800,0,400);
+                new AdjustedCheckValues(800, 0, 400);
 
         AdjustedCheckValues completedOrderValues = ProposedOrderCalculator.calculateCompleteOrderValues(
                 totalOutstandingAmount,

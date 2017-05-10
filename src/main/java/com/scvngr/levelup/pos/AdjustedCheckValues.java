@@ -1,37 +1,37 @@
 package com.scvngr.levelup.pos;
 
 public class AdjustedCheckValues {
-    private int _spendAmount;
-    private int _taxAmount;
-    private int _excemptionsAmount;
+    private int spendAmount;
+    private int taxAmount;
+    private int exemptionAmount ;
 
     AdjustedCheckValues(int spendAmount, int taxAmount, int exemptionAmount)
     {
-        _spendAmount = spendAmount;
-        _taxAmount = taxAmount;
-        _excemptionsAmount = exemptionAmount;
+        this.spendAmount = spendAmount;
+        this.taxAmount = taxAmount;
+        this.exemptionAmount = exemptionAmount;
     }
 
     public int getSpendAmount() {
-        return _spendAmount;
+        return spendAmount;
     }
 
-    public void setSpendAmount(int _spendAmount) {
-        this._spendAmount = _spendAmount;
+    void setSpendAmount(int _spendAmount) {
+        this.spendAmount = _spendAmount;
     }
 
     public int getTaxAmount() {
-        return _taxAmount;
+        return taxAmount;
     }
 
     public int getExcemptionsAmount() {
-        return _excemptionsAmount;
+        return exemptionAmount ;
     }
 
     @Override
     public String toString()
     {
-        return String.format("SpendAmount=%s;TaxAmount=%s;ExemptionAmount=%s", _spendAmount, _taxAmount, _excemptionsAmount);
+        return String.format("SpendAmount=%s;TaxAmount=%s;ExemptionAmount=%s", spendAmount, taxAmount, exemptionAmount );
     }
 
     @Override

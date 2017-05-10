@@ -2,9 +2,6 @@ package com.scvngr.levelup.pos;
 
 import junit.framework.TestCase;
 
-/**
- * Created by Navid on 5/9/2017.
- */
 public class UpdateSpendAmountCompleteOrderTests extends TestCase {
     // Payment requested > total due
     public void testUpdateSpend_WhenCompleteOrderRequestIs_PayingTooMuch_1200()

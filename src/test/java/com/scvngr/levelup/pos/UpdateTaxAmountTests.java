@@ -2,9 +2,6 @@ package com.scvngr.levelup.pos;
 
 import junit.framework.TestCase;
 
-/**
- * Created by Navid on 5/9/2017.
- */
 public class UpdateTaxAmountTests extends TestCase {
     // Paid In Full
     public void testUpdateTax_WhenProposedOrderRequest_IsPaidInFull()

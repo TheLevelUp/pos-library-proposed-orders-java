@@ -4,9 +4,6 @@ import junit.framework.TestCase;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 
-/**
- * Created by Navid on 5/9/2017.
- */
 @RunWith(Enclosed.class)
 public class UpdatedExemptionAmountTests extends TestCase {
 
