@@ -54,7 +54,7 @@ public class SplitTenderTests extends TestCase {
         // Create completed order: expected values
         // tax amount unchanged
         // spend amount unchanged
-        // expemption amount unchanged
+        // exemption amount unchanged
 
         AdjustedCheckValues expectedCompletedOrderValues =
                 new AdjustedCheckValues(expectedSpendAmount, expectedTaxAmount, expectedExemptionAmount);
