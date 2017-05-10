@@ -29,4 +29,9 @@ public class AdjustedCheckValuesTests extends TestCase {
 
         assertFalse(firstOne.equals(null));
     }
+
+    public void testNotInstanceOfEqualOperationForAdjustedCheckValues(){
+        AdjustedCheckValues firstOne = new AdjustedCheckValues(0,0,0);
+        assertFalse(firstOne.equals(new Object()));
+    }
 }
