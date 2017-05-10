@@ -9,25 +9,6 @@ public class CalculatorTests extends TestCase
         runTestArray(CalculatorTestData.TestBattery);
     }
 
-    public void testTest123(){
-        int totalOutstandingAmount = 1;
-        int totalTaxAmount = 10;
-        int totalExemptionAmount = 0;
-        int spendAmount = 1;
-
-        AdjustedCheckValues expectedCheckValues =
-                new AdjustedCheckValues(1, 1, 0);
-
-        AdjustedCheckValues actualCheckValues = ProposedOrderCalculator.calculateCreateProposedOrderValues(
-                totalOutstandingAmount,
-                totalTaxAmount,
-                totalExemptionAmount,
-                spendAmount);
-
-        assertEquals(expectedCheckValues, actualCheckValues);
-
-    }
-
     private void runTestArray(int[][] values)
     {
         for (int i = 0; i < values.length; i++)
