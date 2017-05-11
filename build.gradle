@@ -1,3 +1,7 @@
+plugins {
+    id 'com.github.hierynomus.license' version '0.14.0'
+}
+
 group 'com.scvngr.levelup.pos'
 version= '1.0.0'
 
