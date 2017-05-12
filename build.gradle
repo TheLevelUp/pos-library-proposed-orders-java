@@ -21,3 +21,7 @@ jar {
     baseName = 'pos-proposed-orders-java'
     version= '1.0.0'
 }
+
+license {
+    header rootProject.file('COPYRIGHT')
+}
