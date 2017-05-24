@@ -39,7 +39,7 @@ public class AdjustedCheckValues {
         return taxAmount;
     }
 
-    public int getExcemptionsAmount() {
+    public int getExemptionsAmount() {
         return exemptionAmount ;
     }
 
@@ -57,10 +57,10 @@ public class AdjustedCheckValues {
 
         AdjustedCheckValues adjustedCheckValues = (AdjustedCheckValues) obj;
 
-        boolean haveSameExcemptionAmount = adjustedCheckValues.getExcemptionsAmount() == this.getExcemptionsAmount();
+        boolean haveSameExemptionAmount = adjustedCheckValues.getExemptionsAmount() == this.getExemptionsAmount();
         boolean haveSameSpendAmount = adjustedCheckValues.getSpendAmount() == this.getSpendAmount();
         boolean haveSameTaxAmount = adjustedCheckValues.getTaxAmount() == this.getTaxAmount();
 
-        return haveSameExcemptionAmount && haveSameSpendAmount && haveSameTaxAmount;
+        return haveSameExemptionAmount && haveSameSpendAmount && haveSameTaxAmount;
     }
 }
