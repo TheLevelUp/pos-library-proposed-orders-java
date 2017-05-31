@@ -103,7 +103,7 @@ gradle licenseFormat
 ```
 
 ## Links
-- [developer.thelevelup.com](https://developer.thelevelup.com)
-  - [Create Proposed Order](https://developer.thelevelup.com/api-reference/v15/orders-create-proposed/)
-  - [Complete Order](https://developer.thelevelup.com/api-reference/v15/orders-create-completed/)
+- [developer.thelevelup.com](http://developer.thelevelup.com)
+  - [Create Proposed Order](http://developer.thelevelup.com/api-reference/v15/orders-create-proposed/)
+  - [Complete Order](http://developer.thelevelup.com/api-reference/v15/orders-create-completed/)
 - [LevelUp Proposed Orders Calculator for C#](https://github.com/TheLevelUp/pos-proposed-orders-csharp)
