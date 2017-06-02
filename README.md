@@ -8,14 +8,14 @@
 ## Introduction
 For point-of-sale and point-of-sale-integration developers working with LevelUp and LevelUp's Proposed Orders flow, this library simplifies what a developer needs to know to create orders. Some common inbound questions include, "What happens if a customer only wants to pay part of the bill? What do I send LevelUp?" This tool will take care of that for you.
 
-The `ProposedOrderCalculator` accepts known check values such as:
+The [`ProposedOrderCalculator`](src/main/java/com/scvngr/levelup/pos/ProposedOrderCalculator.java) accepts known check values such as:
 
 - The current outstanding amount (including tax) due on the check.
 - The current tax amount on the check.
 - The total amount of items exempt from earning loyalty (e.g. tobacco, alcohol).
 - The amount your customer wants to pay.
 
-...and gives you the values needed to either "[create a Proposed Order](http://developer.thelevelup.com/api-reference/v15/orders-create-proposed/)" or "[complete an Order](http://developer.thelevelup.com/api-reference/v15/orders-create-completed/)".
+...and gives you the [`AdjustedCheckValues`](src/main/java/com/scvngr/levelup/pos/AdjustedCheckValues.java) needed to either "[create a Proposed Order](http://developer.thelevelup.com/api-reference/v15/orders-create-proposed/)" or "[complete an Order](http://developer.thelevelup.com/api-reference/v15/orders-create-completed/)".
 
 - The `spend_amount`
 - The `tax_amount`
@@ -24,9 +24,9 @@ The `ProposedOrderCalculator` accepts known check values such as:
 ## Usage & Order Flow
 Using this library with Proposed Orders is simple.
 
-1. Just before a customer pays with LevelUp, retrieve the total due (including tax), the tax due, the total amount of exempted items, and the amount your customer wants to pay and put them into variables. Pass those values to `ProposedOrderCalculator.calculateCreateProposedOrderValues(...)` before calling `/v15/proposed_orders`.
+1. Just before a customer pays with LevelUp, retrieve the total due (including tax), the tax due, the total amount of exempted items, and the amount your customer wants to pay and put them into variables. Pass those values to [`ProposedOrderCalculator.calculateCreateProposedOrderValues(...)`](src/main/java/com/scvngr/levelup/pos/ProposedOrderCalculator.java#L28) before calling [`/v15/proposed_orders`](http://developer.thelevelup.com/api-reference/v15/orders-create-proposed/).
 
-2. After applying any LevelUp discount available (returned in the previous API response), the total due (including tax), and the tax due have likely been changed; retrieve those again. Send the original exemption amount and customer payment amount along with the discount you applied to `ProposedOrderCalculator.calculateCompleteOrderValues(...)` before calling `/v15/completed_orders`.
+2. After applying any LevelUp discount available (returned in the previous API response), the total due (including tax), and the tax due have likely been changed; retrieve those again. Send the original exemption amount and customer payment amount along with the discount you applied to [`ProposedOrderCalculator.calculateCompleteOrderValues(...)`](src/main/java/com/scvngr/levelup/pos/ProposedOrderCalculator.java#L54) before calling [`/v15/completed_orders`](http://developer.thelevelup.com/api-reference/v15/orders-create-completed/).
 
 ```java
 public class Program
