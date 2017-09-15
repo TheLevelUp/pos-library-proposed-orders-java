@@ -14,123 +14,159 @@
  *    limitations under the License.
  */
 package com.scvngr.levelup.pos;
-
 public class ProposedOrderCalculator {
     /**
      * Accepts known values from the point-of-sale and gives you an AdjustedCheckValues object containing the
      * spend_amount, tax_amount, and exemption_amount to submit a LevelUp Create Proposed Order API request.
      *
-     * @param totalOutstandingAmount The current total amount of the check, including tax, in cents.
-     * @param totalTaxAmount         The current tax due on the check, in cents.
-     * @param totalExemptionAmount   The current total of exempted items on the check, in cents.
-     * @param customerPaymentAmount  The amount the customer would like to spend, in cents.
+     * @param outstandingAmount The current total amount of the check, including tax, in cents.
+     * @param taxAmount         The current tax due on the check, in cents.
+     * @param exemptAmount   The current total of exempted items on the check, in cents.
+     * @param paymentAmount  The amount the customer would like to spend, in cents.
+     * @throws Exception
      */
-    public static AdjustedCheckValues calculateCreateProposedOrderValues(int totalOutstandingAmount,
-                                                                         int totalTaxAmount,
-                                                                         int totalExemptionAmount,
-                                                                         int customerPaymentAmount) {
-        int adjustedSpendAmount =
-                calculateAdjustedCustomerPaymentAmount(customerPaymentAmount, totalOutstandingAmount);
+    public static AdjustedCheckValues calculateCreateProposedOrderValues(
+            int outstandingAmount,
+            int taxAmount,
+            int exemptAmount,
+            int paymentAmount) throws Exception {
 
-        int adjustedTaxAmount = calculateAdjustedTaxAmount(totalOutstandingAmount, totalTaxAmount,
-                adjustedSpendAmount);
-
-        int adjustedExemptionAmount = calculateAdjustedExemptionAmount(totalOutstandingAmount, totalTaxAmount,
-                totalExemptionAmount, adjustedSpendAmount);
-
-        return new AdjustedCheckValues(adjustedSpendAmount, adjustedTaxAmount, adjustedExemptionAmount);
+        return calculateOrderValues(outstandingAmount, taxAmount, exemptAmount, paymentAmount);
     }
 
     /**
      * Accepts known values from the point-of-sale and gives you an AdjustedCheckValues object containing the
      * spend_amount, tax_amount, and exemption_amount to submit a LevelUp Complete Order API request.
      *
-     * @param totalOutstandingAmount The current total amount of the check, including tax, in cents.
-     * @param totalTaxAmount         The current tax due on the check, in cents.
-     * @param totalExemptionAmount   The current total of exempted items on the check, in cents.
-     * @param customerPaymentAmount  The amount the customer would like to spend, in cents.
+     * @param outstandingAmount The current total amount of the check, including tax, in cents.
+     * @param taxAmount         The current tax due on the check, in cents.
+     * @param exemptAmount   The current total of exempted items on the check, in cents.
+     * @param paymentAmount  The amount the customer would like to spend, in cents.
      * @param appliedDiscountAmount  The discount amount applied to the point of sale for the customer.
+     * @throws Exception
      */
-    public static AdjustedCheckValues calculateCompleteOrderValues(int totalOutstandingAmount,
-                                                                   int totalTaxAmount,
-                                                                   int totalExemptionAmount,
-                                                                   int customerPaymentAmount,
-                                                                   int appliedDiscountAmount) {
-        AdjustedCheckValues values = calculateCreateProposedOrderValues(
-                totalOutstandingAmount,
-                totalTaxAmount,
-                totalExemptionAmount,
-                customerPaymentAmount);
+    public static AdjustedCheckValues calculateCompleteOrderValues(
+            int outstandingAmount,
+            int taxAmount,
+            int exemptAmount,
+            int paymentAmount,
+            int appliedDiscountAmount) throws Exception{
+        int outstandingAmountWithDiscount = outstandingAmount + Math.abs(appliedDiscountAmount);
 
-        values.setSpendAmount(
-                calculateAdjustedSpendAmountCompleteOrder(
-                        totalOutstandingAmount, customerPaymentAmount, appliedDiscountAmount));
-
-        return values;
+        return calculateOrderValues(
+                outstandingAmountWithDiscount,
+                taxAmount,
+                exemptAmount,
+                paymentAmount);
     }
 
-    static int calculateAdjustedCustomerPaymentAmount(int totalOutstandingAmount, int customerPaymentAmount) {
-        return Math.max(0, Math.min(customerPaymentAmount, totalOutstandingAmount));
+    static AdjustedCheckValues calculateOrderValues(int outstandingAmount,
+                                                    int taxAmount,
+                                                    int exemptionAmount,
+                                                    int paymentAmount) throws Exception
+    {
+        CheckData checkData = sanitizeData(outstandingAmount, taxAmount, exemptionAmount, paymentAmount);
+
+        int adjustedTaxAmount = calculateAdjustedTaxAmount(checkData);
+
+        int adjustedExemptionAmount = calculateAdjustedExemptionAmount(checkData);
+
+        return new AdjustedCheckValues(
+                checkData.PaymentAmount,
+                adjustedTaxAmount,
+                adjustedExemptionAmount);
     }
 
-    static int calculateAdjustedTaxAmount(int totalOutstandingAmount,
-                                          int totalTaxAmount,
-                                          int postAdjustedCustomerPaymentAmount) {
+    static CheckData sanitizeData(int outstandingAmount,
+                                  int taxAmount,
+                                  int exemptionAmount,
+                                  int paymentAmount)
+    {
+        CheckData checkData = new CheckData();
+        checkData.ExemptionAmount = exemptionAmount;
+        checkData.OutstandingAmount = outstandingAmount;
+        checkData.PaymentAmount = paymentAmount;
+        checkData.TaxAmount = taxAmount;
 
-        totalTaxAmount = Math.max(0, Math.min(totalTaxAmount, totalOutstandingAmount));
+        checkData.PaymentAmount = paymentAmountCannotBeGreaterThanOutstandingAmount(
+                checkData.OutstandingAmount,
+                checkData.PaymentAmount);
 
-        boolean wasPartialPaymentRequested = postAdjustedCustomerPaymentAmount < totalOutstandingAmount;
+        checkData.TaxAmount = taxAmountCannotBeGreaterThanOutstandingAmount(
+                checkData.OutstandingAmount,
+                checkData.TaxAmount);
 
-        if (wasPartialPaymentRequested) {
-            int remainingAmountOwedAfterSpend = totalOutstandingAmount - postAdjustedCustomerPaymentAmount;
-            totalTaxAmount = Math.max(0, totalTaxAmount - remainingAmountOwedAfterSpend);
-        }
+        checkData.ExemptionAmount = exemptionAmountCannotBeGreaterThanPreTaxSubtotal(
+                checkData.ExemptionAmount,
+                checkData.getPreTaxSubtotal());
 
-        return totalTaxAmount;
-    }
-
-    static int calculateAdjustedExemptionAmount(int totalOutstandingAmount,
-                                                int totalTaxAmount,
-                                                int totalExemptionAmount,
-                                                int postAdjustedCustomerPaymentAmount) {
-        int totalOutstandingAmountLessTax = totalOutstandingAmount - totalTaxAmount;
-
-        boolean wasPartialPaymentRequestedWrtSubtotal = postAdjustedCustomerPaymentAmount < totalOutstandingAmountLessTax;
-
-        if (wasPartialPaymentRequestedWrtSubtotal) {
-            // defer the exemption amount to last possible paying customer or customers
-            int totalOutstandingLessTaxAfterPayment =
-                    Math.max(0, totalOutstandingAmountLessTax - postAdjustedCustomerPaymentAmount);
-
-            totalExemptionAmount = Math.max(0, totalExemptionAmount - totalOutstandingLessTaxAfterPayment);
-        }
-
-        int adjustedExemptionAmount = Math.min(Math.min(totalExemptionAmount, totalOutstandingAmountLessTax),
-                postAdjustedCustomerPaymentAmount);
-
-        return Math.max(0, adjustedExemptionAmount);
+        return checkData;
     }
 
     /**
-     * Adjusts the `spend_amount` by considering the amount a customer wants to pay, the total due on the check
-     * after applying the discount (0 if none was available), and the discount amount applied. The user will never
-     * pay more than their requested spend amount, including any discount amount applied.
-     * <p>
-     * Note: If we know what is owed now, and we know what discount was applied, then we know what was originally owed.
-     * Using that information, we can determine if the customer attempted a partial payment or not. If a customer attempts a partial payment,
-     * the `spend_amount` is equal to the customerSpendAmount.
-     * If the customer is paying the balance in full, the `spend_amount` is equal to the totalOutstandingAmount + appliedDiscountAmount.
-     * </p>
-     *
-     * @param totalOutstandingAmount The current total amount of the check, including tax, in cents.
-     * @param customerSpendAmount    The amount the customer would like to spend, in cents.
-     * @param appliedDiscountAmount  The discount amount applied to the point of sale for the customer.
+     * For LevelUp Proposed/Complete Order, with partial payments, the last user to pay is responsible
+     * for paying the tax.
+     * @param checkData
+     * @return tax amount
+     * @throws Exception if tax amount greater than outstanding amount
      */
-    static int calculateAdjustedSpendAmountCompleteOrder(int totalOutstandingAmount,
-                                                         int customerSpendAmount,
-                                                         int appliedDiscountAmount) {
-        int theoreticalTotalOutstandingAmount = totalOutstandingAmount + Math.abs(appliedDiscountAmount);
+    static int calculateAdjustedTaxAmount(CheckData checkData) throws Exception
+    {
+        if(checkData.TaxAmount > checkData.OutstandingAmount)
+        {
+            throw new Exception("Tax amount cannot be greater than total outstanding amount.");
+        }
 
-        return Math.max(0, Math.min(customerSpendAmount, theoreticalTotalOutstandingAmount));
+        boolean isTaxFullyPaid = checkData.PaymentAmount >= checkData.OutstandingAmount;
+        if(isTaxFullyPaid)
+        {
+            return checkData.TaxAmount;
+        }
+
+        return zeroIfNegative(checkData.PaymentAmount - checkData.getPreTaxSubtotal());
+    }
+
+    /**
+     * For LevelUp Proposed/Complete Order, with partial payments, the last user to pay bears the burden of
+     * exemption amounts. We allow anyone paying to use discount credit until the remaining amount owed is
+     * less than or equal to the amount of exempted items on the check.
+     * @param checkData
+     * @return
+     * @throws Exception if the exemption amount greater than the pre-tax total
+     */
+    static int calculateAdjustedExemptionAmount(CheckData checkData) throws Exception
+    {
+        if(checkData.ExemptionAmount > checkData.getPreTaxSubtotal())
+        {
+            throw new Exception("Exemption amount cannot be greater than the pre-tax total on the check.");
+        }
+
+        boolean isExemptFullyPaid = checkData.PaymentAmount >= checkData.getPreTaxSubtotal();
+        if(isExemptFullyPaid)
+        {
+            return checkData.ExemptionAmount;
+        }
+
+        return zeroIfNegative(checkData.PaymentAmount - checkData.getNonExemptSubtotal());
+    }
+
+    private static int paymentAmountCannotBeGreaterThanOutstandingAmount(int outstandingAmount, int paymentAmount) {
+        return smallerOrZeroIfNegative(outstandingAmount, paymentAmount);
+    }
+
+    private static int taxAmountCannotBeGreaterThanOutstandingAmount(int outstandingAmount, int taxAmount) {
+        return smallerOrZeroIfNegative(taxAmount, outstandingAmount);
+    }
+
+    private static int exemptionAmountCannotBeGreaterThanPreTaxSubtotal(int exemptAmount, int outstandingAmount) {
+        return smallerOrZeroIfNegative(exemptAmount, outstandingAmount);
+    }
+
+    private static int smallerOrZeroIfNegative(int a, int b){
+        return zeroIfNegative(Math.min(a, b));
+    }
+
+    private static int zeroIfNegative(int val) {
+        return Math.max(0, val);
     }
 }
