@@ -24,7 +24,7 @@ public class CalculatorTests extends TestCase
         runTestArray(CalculatorTestData.TestBattery);
     }
 
-    private void runTestArray(int[][] values)
+    private void runTestArray(int[][] values) throws Exception
     {
         for (int i = 0; i < values.length; i++)
         {

@@ -19,56 +19,76 @@ import junit.framework.TestCase;
 
 public class UpdateTaxAmountTests extends TestCase {
     // Paid In Full
-    public void testUpdateTax_WhenProposedOrderRequest_IsPaidInFull()
+    public void testUpdateTax_WhenProposedOrderRequest_IsPaidInFull() throws Exception
     {
         int outstandingTotalOnCheck = 1000;
         int taxAmount = 100;
         int amountCustomerIsPaying = 1000;
 
         assertEquals(taxAmount,
-                ProposedOrderCalculator.calculateAdjustedTaxAmount(outstandingTotalOnCheck, taxAmount, amountCustomerIsPaying));
+                ProposedOrderCalculator.calculateOrderValues(
+                        outstandingTotalOnCheck,
+                        taxAmount,
+                        0,
+                        amountCustomerIsPaying).getTaxAmount());
     }
 
     // Partial payment, payment requested > subtotal
-    public void testUpdateTax_WhenProposedOrderRequestIs_PartiallyPayingIntoTheTax()
+    public void testUpdateTax_WhenProposedOrderRequestIs_PartiallyPayingIntoTheTax() throws Exception
     {
         int outstandingTotalOnCheck = 1000;
         int taxAmount = 100;
         int amountCustomerIsPaying = 950;
 
         assertEquals(50,
-                ProposedOrderCalculator.calculateAdjustedTaxAmount(outstandingTotalOnCheck, taxAmount, amountCustomerIsPaying));
+                ProposedOrderCalculator.calculateOrderValues(
+                        outstandingTotalOnCheck,
+                        taxAmount,
+                        0,
+                        amountCustomerIsPaying).getTaxAmount());
     }
 
     // Partial payment, payment requested < subtotal
-    public void testUpdateTax_WhenProposedOrderRequestIs_NotPaidInFull()
+    public void testUpdateTax_WhenProposedOrderRequestIs_NotPaidInFull() throws Exception
     {
         int outstandingTotalOnCheck = 1000;
         int taxAmount = 100;
         int amountCustomerIsPaying = 500;
 
         assertEquals(0,
-                ProposedOrderCalculator.calculateAdjustedTaxAmount(outstandingTotalOnCheck, taxAmount, amountCustomerIsPaying));
+                ProposedOrderCalculator.calculateOrderValues(
+                        outstandingTotalOnCheck,
+                        taxAmount,
+                        0,
+                        amountCustomerIsPaying).getTaxAmount());
     }
 
-    public void testUpdateTax_WhenProposedOrderRequestIs_PayingOneCent()
+    public void testUpdateTax_WhenProposedOrderRequestIs_PayingOneCent() throws Exception
     {
         int outstandingTotalOnCheck = 1000;
         int taxAmount = 100;
         int amountCustomerIsPaying = 1;
 
         assertEquals(0,
-                ProposedOrderCalculator.calculateAdjustedTaxAmount(outstandingTotalOnCheck, taxAmount, amountCustomerIsPaying));
+                ProposedOrderCalculator.calculateOrderValues(
+                        outstandingTotalOnCheck,
+                        taxAmount,
+                        0,
+                        amountCustomerIsPaying).getTaxAmount());
     }
 
     // Zero dollar payment; this order would get rejected by platform
-    public void testUpdateTax_WhenProposedOrderRequestIs_PayingNothing()
+    public void testUpdateTax_WhenProposedOrderRequestIs_PayingNothing() throws Exception
     {
         int outstandingTotalOnCheck = 1000;
         int taxAmount = 100;
         int amountCustomerIsPaying = 0;
 
         assertEquals(0,
-                ProposedOrderCalculator.calculateAdjustedTaxAmount(outstandingTotalOnCheck, taxAmount, amountCustomerIsPaying));
+                ProposedOrderCalculator.calculateOrderValues(
+                        outstandingTotalOnCheck,
+                        taxAmount,
+                        0,
+                        amountCustomerIsPaying).getTaxAmount());
     }
 }
