@@ -15,7 +15,12 @@
  */
 package com.scvngr.levelup.pos;
 
+import com.scvngr.levelup.pos.mocks.Check;
+
 import junit.framework.TestCase;
+
+import org.junit.Test;
+import org.omg.CORBA.Environment;
 
 public class SplitTenderTests extends TestCase {
     private static final int TAX_RATE = 10; //Tax rate as percent
@@ -159,14 +164,12 @@ public class SplitTenderTests extends TestCase {
         assertEquals(expectedCompletedOrderValues, completedOrderValues);
     }
 
-    public void testSplitTenderExample_LevelUp_Then_Cash_With_Exemptions() throws Exception {
+    public void testSplitTenderExample_NoChangeInSpendOrTax_AfterLevelUpPaidFirst() throws Exception
+    {
         // $9.90 is owed, $0.90 of that is tax. $3.00 of that is tobacco/alcohol, and the customer wants to pay
         // $9.00 towards the check
-        int itemsSubtotalAmount = 900;
-        int taxAmountDue = itemsSubtotalAmount / TAX_RATE;
-        int totalOutstandingAmount = itemsSubtotalAmount + taxAmountDue;
+        Check check = new Check(990,90);
         int exemptionAmount = 300;
-
         int spendAmount = 900;
 
         // Create proposed order: expected values
@@ -174,86 +177,36 @@ public class SplitTenderTests extends TestCase {
                 new AdjustedCheckValues(900, 0, 300);
 
         AdjustedCheckValues proposedOrderValues = ProposedOrderCalculator.calculateCreateProposedOrderValues(
-                totalOutstandingAmount,
-                taxAmountDue,
+                check.getTotalOutstandingAmount(),
+                check.getTotalTaxAmount(),
                 exemptionAmount,
                 spendAmount);
 
-        assertEquals(expectedProposedOrderValues, proposedOrderValues);
+
+        assertTrue(proposedOrderValues.equals(expectedProposedOrderValues));
 
         // available discount amount $1
         int availableDiscountAmount = 100;
 
         // POS applies $1.00 pretax discount to check and updates subtotal and tax
-        itemsSubtotalAmount -= availableDiscountAmount;
-        taxAmountDue = itemsSubtotalAmount / TAX_RATE;
-        totalOutstandingAmount = itemsSubtotalAmount + taxAmountDue;
+        check.applyDiscount(100);
 
-        // Create completed order: expected values
-        // tax amount unchanged
-        // spend amount unchanged
-        // exemption amount unchanged
+        // $8.00 (Subtotal)
+        // $0.80 (Tax)
+        // $8.80 (Total)
+        // $9.80 (Total + Applied Discount)
+
         AdjustedCheckValues expectedCompletedOrderValues =
-                new AdjustedCheckValues(900, 80, 300);
+                new AdjustedCheckValues(900, 0, 300);
 
         AdjustedCheckValues completedOrderValues = ProposedOrderCalculator.calculateCompleteOrderValues(
-                totalOutstandingAmount,
-                taxAmountDue,
+                check.getTotalOutstandingAmount(),
+                check.getTotalTaxAmount(),
                 exemptionAmount,
                 spendAmount,
                 availableDiscountAmount);
 
-        assertEquals(expectedCompletedOrderValues, completedOrderValues);
-    }
-
-    /**
-     * Adjusted spend = No, Exemption = Yes, Tax = Yes
-     */
-    public void testSplitTenderExample_LevelUp_Then_Cash_With_Adjusted_Exemption_And_Adjusted_Tax() {
-        // $11.00 is owed, $1.00 of that is tax. $5.00 of that is tobacco/alcohol, and the customer wants to pay
-        // $8.00 towards the check
-        int itemsSubtotalAmount = 1000;
-        int taxAmountDue = itemsSubtotalAmount / TAX_RATE;
-        int totalOutstandingAmount = itemsSubtotalAmount + taxAmountDue;
-        int exemptionAmount = 500;
-
-        int spendAmount = 800;
-
-        // Create propsed order: expected values
-        AdjustedCheckValues expectedProposedOrderValues =
-                new AdjustedCheckValues(800, 0, 300);
-
-        AdjustedCheckValues proposedOrderValues = ProposedOrderCalculator.calculateCreateProposedOrderValues(
-                totalOutstandingAmount,
-                taxAmountDue,
-                exemptionAmount,
-                spendAmount);
-
-        assertEquals(expectedProposedOrderValues, proposedOrderValues);
-
-        // available discount amount $1
-        int availableDiscountAmount = 100;
-
-        // POS applies $1.00 pretax discount to check and updates subtotal and tax
-        itemsSubtotalAmount -= availableDiscountAmount;
-        taxAmountDue = itemsSubtotalAmount / TAX_RATE;
-        totalOutstandingAmount = itemsSubtotalAmount + taxAmountDue;
-
-        // Create completed order: expected values
-        // spend amount unchanged
-        // tax amount unchanged
-        // exemption amount *changed*
-        AdjustedCheckValues expectedCompletedOrderValues =
-                new AdjustedCheckValues(800, 0, 400);
-
-        AdjustedCheckValues completedOrderValues = ProposedOrderCalculator.calculateCompleteOrderValues(
-                totalOutstandingAmount,
-                taxAmountDue,
-                exemptionAmount,
-                spendAmount,
-                availableDiscountAmount);
-
-        assertEquals(expectedCompletedOrderValues, completedOrderValues);
+        assertTrue(completedOrderValues.equals(expectedCompletedOrderValues));
     }
 }
 

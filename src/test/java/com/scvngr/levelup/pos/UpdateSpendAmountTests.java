@@ -25,7 +25,11 @@ public class UpdateSpendAmountTests extends TestCase {
         int amountCustomerIsPaying = 1200;
 
         assertEquals(outstandingTotalOnCheck,
-                ProposedOrderCalculator.calculateAdjustedCustomerPaymentAmount(outstandingTotalOnCheck, amountCustomerIsPaying));
+                ProposedOrderCalculator.sanitizeData(
+                        outstandingTotalOnCheck,
+                        0,
+                        0,
+                        amountCustomerIsPaying).PaymentAmount);
     }
 
     // Paid In Full
@@ -35,7 +39,11 @@ public class UpdateSpendAmountTests extends TestCase {
         int amountCustomerIsPaying = 1000;
 
         assertEquals(amountCustomerIsPaying,
-                ProposedOrderCalculator.calculateAdjustedCustomerPaymentAmount(outstandingTotalOnCheck, amountCustomerIsPaying));
+                ProposedOrderCalculator.sanitizeData(
+                        outstandingTotalOnCheck,
+                        0,
+                        0,
+                        amountCustomerIsPaying).PaymentAmount);
     }
 
     // Partial payment, payment requested < subtotal
@@ -45,7 +53,11 @@ public class UpdateSpendAmountTests extends TestCase {
         int amountCustomerIsPaying = 800;
 
         assertEquals(amountCustomerIsPaying,
-                ProposedOrderCalculator.calculateAdjustedCustomerPaymentAmount(outstandingTotalOnCheck, amountCustomerIsPaying));
+                ProposedOrderCalculator.sanitizeData(
+                        outstandingTotalOnCheck,
+                        0,
+                        0,
+                        amountCustomerIsPaying).PaymentAmount);
     }
 
     // Zero dollar payment
@@ -55,6 +67,10 @@ public class UpdateSpendAmountTests extends TestCase {
         int amountCustomerIsPaying = 0;
 
         assertEquals(amountCustomerIsPaying,
-                ProposedOrderCalculator.calculateAdjustedCustomerPaymentAmount(outstandingTotalOnCheck, amountCustomerIsPaying));
+                ProposedOrderCalculator.sanitizeData(
+                        outstandingTotalOnCheck,
+                        0,
+                        0,
+                        amountCustomerIsPaying).PaymentAmount);
     }
 }

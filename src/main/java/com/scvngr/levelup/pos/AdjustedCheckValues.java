@@ -31,10 +31,6 @@ public class AdjustedCheckValues {
         return spendAmount;
     }
 
-    void setSpendAmount(int _spendAmount) {
-        this.spendAmount = _spendAmount;
-    }
-
     public int getTaxAmount() {
         return taxAmount;
     }
