@@ -29,7 +29,7 @@ public class ProposedOrderCalculator {
             int outstandingAmount,
             int taxAmount,
             int exemptAmount,
-            int paymentAmount) throws Exception {
+            int paymentAmount) {
 
         return calculateOrderValues(outstandingAmount, taxAmount, exemptAmount, paymentAmount);
     }
@@ -50,7 +50,7 @@ public class ProposedOrderCalculator {
             int taxAmount,
             int exemptAmount,
             int paymentAmount,
-            int appliedDiscountAmount) throws Exception{
+            int appliedDiscountAmount) {
         int outstandingAmountWithDiscount = outstandingAmount + Math.abs(appliedDiscountAmount);
 
         return calculateOrderValues(
@@ -63,13 +63,22 @@ public class ProposedOrderCalculator {
     static AdjustedCheckValues calculateOrderValues(int outstandingAmount,
                                                     int taxAmount,
                                                     int exemptionAmount,
-                                                    int paymentAmount) throws Exception
+                                                    int paymentAmount)
     {
         CheckData checkData = sanitizeData(outstandingAmount, taxAmount, exemptionAmount, paymentAmount);
 
-        int adjustedTaxAmount = calculateAdjustedTaxAmount(checkData);
+        int adjustedTaxAmount = 0;
+        int adjustedExemptionAmount = 0;
+        try
+        {
+            adjustedTaxAmount = calculateAdjustedTaxAmount(checkData);
 
-        int adjustedExemptionAmount = calculateAdjustedExemptionAmount(checkData);
+            adjustedExemptionAmount = calculateAdjustedExemptionAmount(checkData);
+        }
+        catch (Exception e){
+            // Should never get here!
+        }
+
 
         return new AdjustedCheckValues(
                 checkData.PaymentAmount,
