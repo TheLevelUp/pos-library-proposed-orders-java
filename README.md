@@ -1,4 +1,5 @@
 # LevelUp Proposed Orders Calculator for Java
+**[This Library is No Longer Being Maintained]**
 
 - [Introduction](#introduction)
 - [Usage & Order Flow](#usage--order-flow)
